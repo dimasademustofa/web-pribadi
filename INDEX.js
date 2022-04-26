@@ -7,7 +7,7 @@ const hbs = require('hbs');
 //use bodyParser middleware
 const bodyParser = require('body-parser');
 const app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3000;
 
 //set views file
 app.set('views',path.join(__dirname,'views'));
