@@ -1,0 +1,18 @@
+{
+  "name": "website-pribadi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "INDEX.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "node INDEX.js"
+  },
+  "author": "Dimas Ade Mustofa",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "express": "^4.18.0",
+    "hbs": "^4.2.0",
+    "mysql": "^2.18.1"
+  }
+}
