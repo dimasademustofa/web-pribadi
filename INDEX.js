@@ -1,39 +1,56 @@
-//use path module
-const path = require('path');
-//use express module
-const express = require('express');
-//use hbs view engine
-const hbs = require('hbs');
-//use bodyParser middleware
-const bodyParser = require('body-parser');
-const app = express();
-const port = process.env.PORT || 3000;
+var http = require('http');
+var fs = require('fs');
+var path = require('path');
+var port = 8000
 
-//set views file
-app.set('views',path.join(__dirname,'views'));
-//set view engine
-app.set('view engine', 'hbs');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-//set folder public as static folder for static file
-app.use('/assets',express.static(__dirname + '/public'));
+http.createServer(function (request, response) {
+    console.log('request ', request.url);
 
-//CONTACT
-app.get ('/CONTACT', (req, res) => {
-  res.render('CONTACT');
-});
+    var filePath = '.' + request.url;
+    if (filePath == './') {
+        filePath = './HOMEPAGE.html';
+    }
 
-//HOMEPAGE
-app.get ('/HOMEPAGE', (req, res) => {
-  res.render('HOMEPAGE');
-});
+    var extname = String(path.extname(filePath)).toLowerCase();
+    var mimeTypes = {
+        '.html': 'text/html',
+        '.js': 'text/javascript',
+        '.css': 'text/css',
+        '.json': 'application/json',
+        '.png': 'image/png',
+        '.jpg': 'image/jpg',
+        '.gif': 'image/gif',
+        '.svg': 'image/svg+xml',
+        '.wav': 'audio/wav',
+        '.mp4': 'video/mp4',
+        '.woff': 'application/font-woff',
+        '.ttf': 'application/font-ttf',
+        '.eot': 'application/vnd.ms-fontobject',
+        '.otf': 'application/font-otf',
+        '.wasm': 'application/wasm'
+    };
 
-//ABOUTME
-app.get ('/ABOUTME', (req, res) => {
-  res.render('ABOUTME');
-});
+    var contentType = mimeTypes[extname] || 'application/octet-stream';
 
-//server listening
-app.listen(8000, () => {
-  console.log('Server is running at port 8000');
-});
+    fs.readFile(filePath, function(error, content) {
+        if (error) {
+            if(error.code == 'ENOENT') {
+                fs.readFile('./404.html', function(error, content) {
+                    response.writeHead(404, { 'Content-Type': 'text/html' });
+                    response.end(content, 'utf-8');
+                });
+            }
+            else {
+                response.writeHead(500);
+                response.end('Sorry, check with the site admin for error: '+error.code+' ..\n');
+            }
+        }
+        else {
+            response.writeHead(200, { 'Content-Type': contentType });
+            response.end(content, 'utf-8');
+        }
+    });
+
+}).listen(port);
+
+console.log('Server running at'+port);
